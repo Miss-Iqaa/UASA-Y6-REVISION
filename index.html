@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun English Reading Quiz! 🎈</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .quiz-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 20px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+      border: 4px solid #FFD166;
+      position: relative;
+    }
+
+    .header-badge {
+      background-color: #FF6B6B;
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      text-align: center;
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 0 #D93838;
+    }
+
+    .progress-bar {
+      background-color: #e0e0e0;
+      border-radius: 12px;
+      height: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #FF6B6B, #FFD166, #06D6A0);
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .reading-passage {
+      background-color: #FFF9E6;
+      border: 2px dashed #FFD166;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    .reading-passage h3 {
+      font-family: 'Fredoka One', cursive;
+      color: #FF6B6B;
+      margin-bottom: 6px;
+    }
+
+    /* Text highlight style */
+    .hl-evidence {
+      background-color: #FFEB3B;
+      color: #000;
+      font-weight: bold;
+      padding: 2px 4px;
+      border-radius: 4px;
+      border: 1px dashed #F57F17;
+    }
+
+    .question-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2B2D42;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .option-btn {
+      background-color: #F4F5F7;
+      border: 3px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      color: #2B2D42;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .option-btn:active {
+      transform: scale(0.98);
+    }
+
+    .option-btn.selected {
+      background-color: #E0F2FE;
+      border-color: #3B82F6;
+      color: #1D4ED8;
+    }
+
+    /* Answer Status Styles */
+    .option-btn.correct-ans {
+      background-color: #D1FAE5 !important;
+      border-color: #10B981 !important;
+      color: #065F46 !important;
+    }
+
+    .option-btn.wrong-ans {
+      background-color: #FEE2E2 !important;
+      border-color: #EF4444 !important;
+      color: #991B1B !important;
+    }
+
+    /* Explanation Banner */
+    .feedback-box {
+      display: none;
+      padding: 12px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .feedback-box.correct {
+      background-color: #E6F4EA;
+      border: 2px solid #34A853;
+      color: #137333;
+    }
+
+    .feedback-box.wrong {
+      background-color: #FCE8E6;
+      border: 2px solid #EA4335;
+      color: #C5221F;
+    }
+
+    .action-btn {
+      width: 100%;
+      background-color: #06D6A0;
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.2rem;
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #05B386;
+      transition: transform 0.1s ease;
+    }
+
+    .action-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #05B386;
+    }
+
+    /* Result Screen */
+    .result-screen {
+      display: none;
+      text-align: center;
+    }
+
+    .result-screen h2 {
+      font-family: 'Fredoka One', cursive;
+      color: #FF6B6B;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .score-box {
+      background: #E0F7FA;
+      border: 3px solid #4DD0E1;
+      border-radius: 18px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+
+    .score-number {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.5rem;
+      color: #00838F;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: #4A5568;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid #CBD5E1;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+    }
+
+    .whatsapp-btn {
+      background-color: #25D366;
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.2rem;
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      width: 100%;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #1EBE5D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .whatsapp-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #1EBE5D;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-card" id="quiz-container">
+    <div style="text-align: center;">
+      <span class="header-badge" id="passage-tag">Section 1</span>
+    </div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <!-- Reading Passage Box -->
+    <div class="reading-passage" id="passage-box">
+      <h3 id="passage-title">Title</h3>
+      <p id="passage-text">Loading...</p>
+    </div>
+
+    <!-- Question -->
+    <div class="question-title" id="question-text">Question goes here...</div>
+
+    <!-- Options -->
+    <div class="options-grid" id="options-container"></div>
+
+    <!-- Explanation Feedback -->
+    <div class="feedback-box" id="feedback-box"></div>
+
+    <button class="action-btn" id="action-btn" onclick="handleAction()">Check Answer 💡</button>
+  </div>
+
+  <!-- Result Screen -->
+  <div class="quiz-card result-screen" id="result-screen">
+    <h2>🎉 Quiz Completed! 🎉</h2>
+    <p>Great job finishing the quiz!</p>
+
+    <div class="score-box">
+      <div>Your Total Score:</div>
+      <div class="score-number" id="final-score">0 / 9</div>
+    </div>
+
+    <div class="input-group">
+      <label for="student-name">Enter Your Name:</label>
+      <input type="text" id="student-name" placeholder="e.g. Ali bin Ahmad">
+    </div>
+
+    <button class="whatsapp-btn" onclick="sendWhatsApp()">
+      📱 Send Results to Teacher
+    </button>
+  </div>
+
+  <script>
+    // Base64 Encoded Teacher Phone Number (e.g., '60123456789' encoded to hide it from plain HTML view)
+    const _0x4a2b = "NjAxNzgxMjg5NzQ="; 
+
+    function getTeacherPhone() {
+      return atob(_0x4a2b);
+    }
+
+    // Base Passages
+    const textPassage1Base = "In the past, people did not have smartphones or computers to communicate with each other. One way people (6)_______ was by writing letters. They would use a pen and paper to write a letter. Once they had written their message, they would put it in an (7)_______ and send it off. It would often take a few days or even weeks (8)_______ the letter to reach its receiver so people had to wait patiently.\n\nAnother way people communicated was by using telegrams. A telegram was a message that was sent by using a special machine. It was faster than sending a letter but it was also more (9)_______.";
+
+    const textPassage2Base = "<strong>Portraits of Sabah:</strong> Fans of Peter Gales will be able to see his exhibition on life in rural areas. The exhibition will be at City Hall, Ampang from Tuesday to Thursday. Admission is free.<br><br><strong>Tribute to MJ Contest:</strong> A contest for MJ fans will be held at Mutiara Shopping Complex on Saturday. Winners will get a chance to watch MJ new film in Singapore. Call 03-5556667 for more information.<br><br><strong>Natya Priyam:</strong> The Sri Selvi Dancers will perform a variety of classical Indian dance called Natya Priyam at Dewan Soma on Monday-Wednesday. Admission is by donation.<br><br><strong>Kasih Medical Centre:</strong> Our Medical team will hold a free talk on ‘Stay Stress Free’ from 2 p.m. to 5 p.m. this Wednesday at our premises. Guest speaker is Dr Gilbert Low. For more information, contact Grace Sivam.<br><br><strong>Annual Excellent Award:</strong> The Annual Boolehwood Excellent Award will be held at Bintang Auditorium on 28 January (Saturday). Attire is formal. No slippers, t-shirts, or shorts. Door gifts and complimentary dinner vouchers at Munchies.";
+
+    const questions = [
+      // Question 6
+      {
+        passageTag: "📖 Section 1: Fill in the Blanks",
+        passageTitle: "Communicating in the Past",
+        basePassage: textPassage1Base,
+        highlightedPassage: "In the past, people did not have smartphones or computers to communicate with each other. <mark class='hl-evidence'>One way people (6) communicated was by writing letters.</mark> They would use a pen and paper to write a letter. Once they had written their message, they would put it in an (7)_______ and send it off. It would often take a few days or even weeks (8)_______ the letter to reach its receiver so people had to wait patiently.\n\nAnother way people communicated was by using telegrams. A telegram was a message that was sent by using a special machine. It was faster than sending a letter but it was also more (9)_______.",
+        question: "6. Choose the correct word for blank (6):",
+        options: ["A. communicate", "B. communicated", "C. communicating"],
+        answer: 1,
+        explanation: "The text is written in the past tense ('in the past', 'did not have', 'was'), so we use 'communicated'."
+      },
+      // Question 7
+      {
+        passageTag: "📖 Section 1: Fill in the Blanks",
+        passageTitle: "Communicating in the Past",
+        basePassage: textPassage1Base,
+        highlightedPassage: "In the past, people did not have smartphones or computers to communicate with each other. One way people (6)_______ was by writing letters. They would use a pen and paper to write a letter. <mark class='hl-evidence'>Once they had written their message, they would put it in an (7) envelope and send it off.</mark> It would often take a few days or even weeks (8)_______ the letter to reach its receiver so people had to wait patiently.\n\nAnother way people communicated was by using telegrams. A telegram was a message that was sent by using a special machine. It was faster than sending a letter but it was also more (9)_______.",
+        question: "7. Choose the correct word for blank (7):",
+        options: ["A. envelope", "B. packet", "C. carton"],
+        answer: 0,
+        explanation: "Letters are placed inside an 'envelope' before being mailed."
+      },
+      // Question 8
+      {
+        passageTag: "📖 Section 1: Fill in the Blanks",
+        passageTitle: "Communicating in the Past",
+        basePassage: textPassage1Base,
+        highlightedPassage: "In the past, people did not have smartphones or computers to communicate with each other. One way people (6)_______ was by writing letters. They would use a pen and paper to write a letter. Once they had written their message, they would put it in an (7)_______ and send it off. <mark class='hl-evidence'>It would often take a few days or even weeks (8) for the letter to reach its receiver</mark> so people had to wait patiently.\n\nAnother way people communicated was by using telegrams. A telegram was a message that was sent by using a special machine. It was faster than sending a letter but it was also more (9)_______.",
+        question: "8. Choose the correct word for blank (8):",
+        options: ["A. for", "B. at", "C. to"],
+        answer: 0,
+        explanation: "The preposition 'for' is used to express duration or purpose for something happening ('take a few days... for the letter')."
+      },
+      // Question 9
+      {
+        passageTag: "📖 Section 1: Fill in the Blanks",
+        passageTitle: "Communicating in the Past",
+        basePassage: textPassage1Base,
+        highlightedPassage: "In the past, people did not have smartphones or computers to communicate with each other. One way people (6)_______ was by writing letters. They would use a pen and paper to write a letter. Once they had written their message, they would put it in an (7)_______ and send it off. It would often take a few days or even weeks (8)_______ the letter to reach its receiver so people had to wait patiently.\n\nAnother way people communicated was by using telegrams. A telegram was a message that was sent by using a special machine. <mark class='hl-evidence'>It was faster than sending a letter but it was also more (9) expensive.</mark>",
+        question: "9. Choose the correct word for blank (9):",
+        options: ["A. wise", "B. careful", "C. expensive"],
+        answer: 2,
+        explanation: "Telegrams were faster than regular letters, but sending them cost more money ('expensive')."
+      },
+      // Question 10
+      {
+        passageTag: "🎪 Section 2: KL Events",
+        passageTitle: "Events Happening in Kuala Lumpur",
+        basePassage: textPassage2Base,
+        highlightedPassage: "<strong>Portraits of Sabah:</strong> Fans of Peter Gales will be able to see his exhibition on life in rural areas. <mark class='hl-evidence'>The exhibition will be at City Hall, Ampang</mark> from Tuesday to Thursday. Admission is free.<br><br><strong>Tribute to MJ Contest:</strong> A contest for MJ fans will be held at Mutiara Shopping Complex on Saturday...",
+        question: "10. The exhibition of Peter Gales will be held in",
+        options: ["A. Sabah.", "B. rural areas.", "C. City Hall, Ampang."],
+        answer: 2,
+        explanation: "The notice states: 'The exhibition will be at City Hall, Ampang'."
+      },
+      // Question 11
+      {
+        passageTag: "🎪 Section 2: KL Events",
+        passageTitle: "Events Happening in Kuala Lumpur",
+        basePassage: textPassage2Base,
+        highlightedPassage: "<strong>Tribute to MJ Contest:</strong> A contest for MJ fans will be held at Mutiara Shopping Complex on Saturday. Winners will get a chance to watch MJ new film in Singapore. <mark class='hl-evidence'>Call 03-5556667 for more information.</mark>",
+        question: "11. For more details about the MJ contest, you need to",
+        options: ["A. call 03-5556667.", "B. watch MJ new film.", "C. take part in the contest."],
+        answer: 0,
+        explanation: "The advertisement says 'Call 03-5556667 for more information'."
+      },
+      // Question 12
+      {
+        passageTag: "🎪 Section 2: KL Events",
+        passageTitle: "Events Happening in Kuala Lumpur",
+        basePassage: textPassage2Base,
+        highlightedPassage: "<strong>Natya Priyam:</strong> The Sri Selvi Dancers will perform a variety of classical Indian dance called Natya Priyam at Dewan Soma on <mark class='hl-evidence'>Monday-Wednesday.</mark> Admission is by donation.",
+        question: "12. The Soma Dancers will perform the classical Indian dance on",
+        options: ["A. weekdays.", "B. weekends.", "C. public holidays."],
+        answer: 0,
+        explanation: "Monday through Wednesday are weekdays."
+      },
+      // Question 13
+      {
+        passageTag: "🎪 Section 2: KL Events",
+        passageTitle: "Events Happening in Kuala Lumpur",
+        basePassage: textPassage2Base,
+        highlightedPassage: "<strong>Kasih Medical Centre:</strong> Our Medical team will hold a free talk on ‘Stay Stress Free’ <mark class='hl-evidence'>from 2 p.m. to 5 p.m.</mark> this Wednesday at our premises.",
+        question: "13. The talk on ‘Stay Stress Free’ will be",
+        options: ["A. two hours.", "B. three hours.", "C. five hours."],
+        answer: 1,
+        explanation: "From 2 p.m. to 5 p.m. is a duration of 3 hours."
+      },
+      // Question 14
+      {
+        passageTag: "🎪 Section 2: KL Events",
+        passageTitle: "Events Happening in Kuala Lumpur",
+        basePassage: textPassage2Base,
+        highlightedPassage: "<strong>Annual Excellent Award:</strong> The Annual Boolehwood Excellent Award will be held at Bintang Auditorium on 28 January (Saturday). Attire is formal. <mark class='hl-evidence'>No slippers, t-shirts, or shorts.</mark>",
+        question: "14. Those who wear slippers, t-shirts and or shorts",
+        options: ["A. will get door gifts.", "B. will not be allowed into the auditorium.", "C. will be given complimentary dinner vouchers."],
+        answer: 1,
+        explanation: "The dress code states 'No slippers, t-shirts, or shorts', meaning people wearing these will not be allowed inside."
+      }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+    let selectedOption = null;
+    let isAnswerChecked = false;
+
+    function loadQuestion() {
+      const q = questions[currentQ];
+      selectedOption = null;
+      isAnswerChecked = false;
+
+      // Update progress bar
+      document.getElementById('progress').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
+      
+      // Update header & base passage text (without highlight initially)
+      document.getElementById('passage-tag').innerText = q.passageTag;
+      document.getElementById('passage-title').innerText = q.passageTitle;
+      document.getElementById('passage-text').innerHTML = q.basePassage;
+
+      // Hide feedback box
+      const feedbackBox = document.getElementById('feedback-box');
+      feedbackBox.style.display = 'none';
+
+      // Update question text
+      document.getElementById('question-text').innerText = q.question;
+
+      // Render options
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+      
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => selectOption(index, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      // Reset Action Button
+      const actionBtn = document.getElementById('action-btn');
+      actionBtn.innerText = "Check Answer 💡";
+      actionBtn.style.backgroundColor = "#06D6A0";
+    }
+
+    function selectOption(index, btnElement) {
+      if (isAnswerChecked) return; // Prevent changing after check
+
+      selectedOption = index;
+      const allBtns = document.querySelectorAll('.option-btn');
+      allBtns.forEach(b => b.classList.remove('selected'));
+      btnElement.classList.add('selected');
+    }
+
+    function handleAction() {
+      if (!isAnswerChecked) {
+        // Step 1: Check Answer
+        if (selectedOption === null) {
+          alert("Please select an answer first!");
+          return;
+        }
+
+        const q = questions[currentQ];
+        const allBtns = document.querySelectorAll('.option-btn');
+        const feedbackBox = document.getElementById('feedback-box');
+
+        // Reveal evidence highlight in reading passage!
+        document.getElementById('passage-text').innerHTML = q.highlightedPassage;
+
+        // Auto-scroll passage box to highlight if needed
+        const highlightElem = document.querySelector('.hl-evidence');
+        if (highlightElem) {
+          highlightElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        if (selectedOption === q.answer) {
+          score++;
+          allBtns[selectedOption].classList.add('correct-ans');
+          allBtns[selectedOption].innerHTML += " <span>✅</span>";
+          feedbackBox.className = "feedback-box correct";
+          feedbackBox.innerHTML = `🎉 <strong>Correct!</strong><br>${q.explanation}`;
+        } else {
+          allBtns[selectedOption].classList.add('wrong-ans');
+          allBtns[selectedOption].innerHTML += " <span>❌</span>";
+          allBtns[q.answer].classList.add('correct-ans');
+          allBtns[q.answer].innerHTML += " <span>✅</span>";
+          feedbackBox.className = "feedback-box wrong";
+          feedbackBox.innerHTML = `❌ <strong>Not quite!</strong><br>${q.explanation}`;
+        }
+
+        feedbackBox.style.display = 'block';
+        isAnswerChecked = true;
+
+        // Change button to Next Question
+        const actionBtn = document.getElementById('action-btn');
+        actionBtn.innerText = (currentQ === questions.length - 1) ? "See Results 🎯" : "Next Question ➔";
+        actionBtn.style.backgroundColor = "#FF9F1C";
+
+      } else {
+        // Step 2: Next Question
+        currentQ++;
+        if (currentQ < questions.length) {
+          loadQuestion();
+        } else {
+          showResults();
+        }
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-screen').style.display = 'block';
+      document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+    }
+
+    function sendWhatsApp() {
+      const name = document.getElementById('student-name').value.trim();
+
+      if (!name) {
+        alert("Please enter your name first!");
+        return;
+      }
+
+      const phone = getTeacherPhone();
+      const message = `Hello Teacher! 👋%0A%0A*English Quiz Results*%0A👤 *Pupil Name:* ${encodeURIComponent(name)}%0A📊 *Score:* ${score} / ${questions.length}%0A%0ACompleted the English Reading Quiz! 🎉`;
+      
+      const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
+      window.open(whatsappUrl, '_blank');
+    }
+
+    // Initialize Quiz
+    loadQuestion();
+  </script>
+</body>
+</html>
